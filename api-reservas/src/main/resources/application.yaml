@@ -1,0 +1,88 @@
+spring:
+  application:
+    name: api-reservas
+  profiles:
+    active: dev
+
+server:
+  port: 8080
+  error:
+    include-message: always
+    include-binding-errors: always
+
+# Configuracion comun a todos los perfiles
+logging:
+  level:
+    root: INFO
+    com.nelumbo.reservas: DEBUG
+    org.springframework.security: INFO
+
+# Configuracion OpenAPI / Swagger
+springdoc:
+  api-docs:
+    path: /v3/api-docs
+  swagger-ui:
+    path: /swagger-ui.html
+    operations-sorter: method
+    tags-sorter: alpha
+
+# Propiedades de la aplicacion
+app:
+  jwt:
+    # Debe ser una clave de al menos 256 bits (32 caracteres) codificada en Base64
+    secret: ${JWT_SECRET:Y2FtYmlhci1lc3RhLWNsYXZlLWVuLXByb2R1Y2Npb24tcG9yLXVuYS1tdXktc2VndXJh}
+    expiration-hours: 6
+    issuer: nelumbo-reservas
+  reserva:
+    monto-aprobacion-premium: 500000
+    expiracion-pendiente-horas: 48
+  notificaciones:
+    base-url: ${NOTIFICACIONES_URL:http://localhost:8081}
+    timeout-ms: 5000
+
+---
+# Perfil DEV (local)
+spring:
+  config:
+    activate:
+      on-profile: dev
+  datasource:
+    url: jdbc:postgresql://localhost:5432/nelumbo_reservas
+    username: ${DB_USER:postgres}
+    password: ${DB_PASSWORD:postgres}
+    driver-class-name: org.postgresql.Driver
+  jpa:
+    hibernate:
+      ddl-auto: validate
+    show-sql: true
+    properties:
+      hibernate:
+        format_sql: true
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+  flyway:
+    enabled: true
+    locations: classpath:db/migration
+    baseline-on-migrate: true
+
+---
+# Perfil DOCKER (cuando corre dentro de docker-compose)
+spring:
+  config:
+    activate:
+      on-profile: docker
+  datasource:
+    url: jdbc:postgresql://postgres:5432/nelumbo_reservas
+    username: ${DB_USER:postgres}
+    password: ${DB_PASSWORD:postgres}
+    driver-class-name: org.postgresql.Driver
+  jpa:
+    hibernate:
+      ddl-auto: validate
+    show-sql: false
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+  flyway:
+    enabled: true
+    locations: classpath:db/migration
+    baseline-on-migrate: true
