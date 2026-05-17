@@ -3,6 +3,8 @@ package com.nelumbo.reservas.config;
 import com.nelumbo.reservas.entity.Usuario;
 import com.nelumbo.reservas.enums.Rol;
 import com.nelumbo.reservas.repository.UsuarioRepository;
+import com.nelumbo.reservas.security.JwtService;
+import com.nelumbo.reservas.security.UserDetailsServiceImpl;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
@@ -41,5 +43,4 @@ public class DataInitializer {
             log.info("Usuario admin creado correctamente: {}", emailAdmin);
         };
     }
-
 }
