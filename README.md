@@ -135,7 +135,7 @@ Authorization: Bearer <token>
 - **Passwords**: se almacenan hasheados con BCrypt.
 - **Migraciones**: la estructura de la base de datos se gestiona con Flyway (`src/main/resources/db/migration`).
 - **Roles**: el ADMIN tiene acceso completo. El GESTOR solo puede ver y operar sobre las sucursales y salones que tiene asociados.
-- **Gestor en sucursal**: cada sucursal tiene un gestor responsable. Los salones heredan el gestor de su sucursal.
+- **Gestor**: cada sucursal tiene un gestor responsable y cada salón también. Pueden ser el mismo gestor o gestores distintos, según necesidad.
 
 ## Estado del desarrollo
 

@@ -8,5 +8,5 @@ public interface SalonRepository extends JpaRepository<Salon, Long> {
 
     List<Salon> findBySucursalId(Long sucursalId);
 
-    List<Salon> findBySucursalGestorId(Long gestorId);
+    List<Salon> findByGestorId(Long gestorId);
 }

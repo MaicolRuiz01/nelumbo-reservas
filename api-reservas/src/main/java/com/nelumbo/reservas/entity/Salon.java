@@ -30,4 +30,8 @@ public class Salon {
     @JoinColumn(name = "sucursal_id", nullable = false)
     private Sucursal sucursal;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "gestor_id", nullable = false)
+    private Usuario gestor;
+
 }

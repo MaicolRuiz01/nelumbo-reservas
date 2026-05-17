@@ -22,6 +22,9 @@ public record SalonRequest(
         BigDecimal costoPorHora,
 
         @NotNull(message = "El id de la sucursal es obligatorio")
-        Long sucursalId
+        Long sucursalId,
+
+        @NotNull(message = "El id del gestor es obligatorio")
+        Long gestorId
 
 ) {}

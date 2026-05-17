@@ -4,9 +4,12 @@ import com.nelumbo.reservas.dto.request.SalonRequest;
 import com.nelumbo.reservas.dto.response.SalonResponse;
 import com.nelumbo.reservas.entity.Salon;
 import com.nelumbo.reservas.entity.Usuario;
+import com.nelumbo.reservas.enums.Rol;
 import com.nelumbo.reservas.exception.AccesoDenegadoException;
+import com.nelumbo.reservas.exception.GestorNoEncontradoException;
 import com.nelumbo.reservas.exception.SalonNoEncontradoException;
 import com.nelumbo.reservas.exception.SucursalNoEncontradaException;
+import com.nelumbo.reservas.exception.UsuarioNoEsGestorException;
 import com.nelumbo.reservas.mapper.SalonMapper;
 import com.nelumbo.reservas.repository.SalonRepository;
 import com.nelumbo.reservas.repository.SucursalRepository;
@@ -32,6 +35,7 @@ public class SalonService {
         Salon salon = salonMapper.toEntity(request);
         salon.setSucursal(sucursalRepository.findById(request.sucursalId())
                 .orElseThrow(() -> new SucursalNoEncontradaException(request.sucursalId())));
+        salon.setGestor(buscarGestorValidoOFallar(request.gestorId()));
         return salonMapper.toResponse(salonRepository.save(salon));
     }
 
@@ -42,7 +46,7 @@ public class SalonService {
                     .stream().map(salonMapper::toResponse).toList();
         }
         Usuario gestor = obtenerUsuarioPorEmail(email);
-        return salonRepository.findBySucursalGestorId(gestor.getId())
+        return salonRepository.findByGestorId(gestor.getId())
                 .stream().map(salonMapper::toResponse).toList();
     }
 
@@ -51,7 +55,7 @@ public class SalonService {
         Salon salon = buscarOFallar(id);
         if (!esAdmin) {
             Usuario gestor = obtenerUsuarioPorEmail(email);
-            if (!salon.getSucursal().getGestor().getId().equals(gestor.getId())) {
+            if (!salon.getGestor().getId().equals(gestor.getId())) {
                 throw new AccesoDenegadoException("No tienes acceso a este salón");
             }
         }
@@ -66,6 +70,7 @@ public class SalonService {
         salon.setCostoPorHora(request.costoPorHora());
         salon.setSucursal(sucursalRepository.findById(request.sucursalId())
                 .orElseThrow(() -> new SucursalNoEncontradaException(request.sucursalId())));
+        salon.setGestor(buscarGestorValidoOFallar(request.gestorId()));
         return salonMapper.toResponse(salonRepository.save(salon));
     }
 
@@ -78,6 +83,15 @@ public class SalonService {
     private Salon buscarOFallar(Long id) {
         return salonRepository.findById(id)
                 .orElseThrow(() -> new SalonNoEncontradoException(id));
+    }
+
+    private Usuario buscarGestorValidoOFallar(Long gestorId) {
+        Usuario gestor = usuarioRepository.findById(gestorId)
+                .orElseThrow(() -> new GestorNoEncontradoException(gestorId));
+        if (gestor.getRol() != Rol.GESTOR) {
+            throw new UsuarioNoEsGestorException(gestorId);
+        }
+        return gestor;
     }
 
     private Usuario obtenerUsuarioPorEmail(String email) {
