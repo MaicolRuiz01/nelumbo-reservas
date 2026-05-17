@@ -91,10 +91,32 @@ pass:  admin
 
 ---
 
+## Endpoints disponibles
+
+### Autenticación (`/auth`)
+
+| Método | Ruta | Descripción | Acceso |
+|---|---|---|---|
+| POST | `/auth/login` | Inicio de sesión, devuelve JWT | Público |
+| POST | `/auth/register` | Crea un usuario con rol GESTOR | Solo ADMIN |
+| POST | `/auth/logout` | Invalida el token actual | Autenticado |
+
+El token JWT tiene una duración de **6 horas** y se envía en cada petición protegida en el header:
+
+```
+Authorization: Bearer <token>
+```
+
+## Notas técnicas
+
+- **Logout**: la invalidación de tokens se hace mediante una blacklist en memoria que se limpia automáticamente cada 30 minutos. Para producción se recomendaría usar Redis.
+- **Passwords**: se almacenan hasheados con BCrypt.
+- **Migraciones**: la estructura de la base de datos se gestiona con Flyway (`src/main/resources/db/migration`).
+
 ## Estado del desarrollo
 
 - [x] Fase 0 — Setup del monorepo
-- [ ] Fase 1 — Autenticación y seguridad JWT
+- [x] Fase 1 — Autenticación y seguridad JWT
 - [ ] Fase 2 — CRUD de Sucursales y Salones
 - [ ] Fase 3 — Reservas (núcleo de negocio)
 - [ ] Fase 4 — Microservicio de Notificaciones
