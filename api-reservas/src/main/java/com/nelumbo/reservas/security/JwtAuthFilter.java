@@ -24,6 +24,7 @@ public class JwtAuthFilter extends OncePerRequestFilter {
 
     private final JwtService jwtService;
     private final UserDetailsServiceImpl userDetailsService;
+    private final TokenBlacklistService tokenBlacklistService;
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException{
@@ -36,6 +37,12 @@ public class JwtAuthFilter extends OncePerRequestFilter {
        }
 
        final String token = authHeader.substring(7);
+
+        if (tokenBlacklistService.estaRevocado(token)) {
+            log.warn("Intento de uso de token revocado");
+            filterChain.doFilter(request, response);
+            return;
+        }
 
        try{
            final String email = jwtService.extractUsername(token);
