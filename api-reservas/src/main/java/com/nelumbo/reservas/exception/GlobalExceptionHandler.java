@@ -93,6 +93,56 @@ public class GlobalExceptionHandler {
                         request.getRequestURI()));
     }
 
+    @ExceptionHandler(GestorNoEncontradoException.class)
+    public ResponseEntity<ErrorResponse> manejarGestorNoEncontrado(
+            GestorNoEncontradoException ex, HttpServletRequest request) {
+        log.warn("Gestor no encontrado: {}", ex.getMessage());
+        return ResponseEntity
+                .status(HttpStatus.NOT_FOUND)
+                .body(ErrorResponse.simple(ex.getMessage(), 404, request.getRequestURI()));
+    }
+
+    @ExceptionHandler(UsuarioNoEsGestorException.class)
+    public ResponseEntity<ErrorResponse> manejarUsuarioNoEsGestor(
+            UsuarioNoEsGestorException ex, HttpServletRequest request) {
+        log.warn("Usuario no tiene rol GESTOR: {}", ex.getMessage());
+        return ResponseEntity
+                .status(HttpStatus.BAD_REQUEST)
+                .body(ErrorResponse.simple(ex.getMessage(), 400, request.getRequestURI()));
+    }
+
+    @ExceptionHandler(SucursalNoEncontradaException.class)
+    public ResponseEntity<ErrorResponse> manejarSucursalNoEncontrada(
+            SucursalNoEncontradaException ex, HttpServletRequest request) {
+        log.warn("Sucursal no encontrada: {}", ex.getMessage());
+        return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                .body(ErrorResponse.simple(ex.getMessage(), 404, request.getRequestURI()));
+    }
+
+    @ExceptionHandler(SalonNoEncontradoException.class)
+    public ResponseEntity<ErrorResponse> manejarSalonNoEncontrado(
+            SalonNoEncontradoException ex, HttpServletRequest request) {
+        log.warn("Salón no encontrado: {}", ex.getMessage());
+        return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                .body(ErrorResponse.simple(ex.getMessage(), 404, request.getRequestURI()));
+    }
+
+    @ExceptionHandler(AccesoDenegadoException.class)
+    public ResponseEntity<ErrorResponse> manejarAccesoDenegadoNegocio(
+            AccesoDenegadoException ex, HttpServletRequest request) {
+        log.warn("Acceso denegado: {}", ex.getMessage());
+        return ResponseEntity.status(HttpStatus.FORBIDDEN)
+                .body(ErrorResponse.simple(ex.getMessage(), 403, request.getRequestURI()));
+    }
+
+    @ExceptionHandler(SucursalConSalonesException.class)
+    public ResponseEntity<ErrorResponse> manejarSucursalConSalones(
+            SucursalConSalonesException ex, HttpServletRequest request) {
+        log.warn("Eliminar sucursal con salones: {}", ex.getMessage());
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                .body(ErrorResponse.simple(ex.getMessage(), 400, request.getRequestURI()));
+    }
+
     private String formatearError(FieldError fieldError) {
         return fieldError.getField() + ": " + fieldError.getDefaultMessage();
     }

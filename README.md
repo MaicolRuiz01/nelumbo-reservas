@@ -93,6 +93,12 @@ pass:  admin
 
 ## Endpoints disponibles
 
+El token JWT tiene una duración de **6 horas** y se envía en cada petición protegida en el header:
+
+```
+Authorization: Bearer <token>
+```
+
 ### Autenticación (`/auth`)
 
 | Método | Ruta | Descripción | Acceso |
@@ -101,23 +107,41 @@ pass:  admin
 | POST | `/auth/register` | Crea un usuario con rol GESTOR | Solo ADMIN |
 | POST | `/auth/logout` | Invalida el token actual | Autenticado |
 
-El token JWT tiene una duración de **6 horas** y se envía en cada petición protegida en el header:
+### Sucursales (`/sucursales`)
 
-```
-Authorization: Bearer <token>
-```
+| Método | Ruta | Descripción | Acceso |
+|---|---|---|---|
+| POST | `/sucursales` | Crear sucursal (requiere gestorId) | Solo ADMIN |
+| GET | `/sucursales` | Listar sucursales | ADMIN: todas · GESTOR: las propias |
+| GET | `/sucursales/{id}` | Detalle de una sucursal | ADMIN: cualquiera · GESTOR: solo las propias |
+| PUT | `/sucursales/{id}` | Actualizar sucursal | Solo ADMIN |
+| DELETE | `/sucursales/{id}` | Eliminar sucursal (sin salones) | Solo ADMIN |
+
+### Salones (`/salones`)
+
+| Método | Ruta | Descripción | Acceso |
+|---|---|---|---|
+| POST | `/salones` | Crear salón | Solo ADMIN |
+| GET | `/salones` | Listar salones | ADMIN: todos · GESTOR: los de sus sucursales |
+| GET | `/salones/{id}` | Detalle de un salón | ADMIN: cualquiera · GESTOR: solo los propios |
+| PUT | `/salones/{id}` | Actualizar salón | Solo ADMIN |
+| DELETE | `/salones/{id}` | Eliminar salón | Solo ADMIN |
+
+---
 
 ## Notas técnicas
 
 - **Logout**: la invalidación de tokens se hace mediante una blacklist en memoria que se limpia automáticamente cada 30 minutos. Para producción se recomendaría usar Redis.
 - **Passwords**: se almacenan hasheados con BCrypt.
 - **Migraciones**: la estructura de la base de datos se gestiona con Flyway (`src/main/resources/db/migration`).
+- **Roles**: el ADMIN tiene acceso completo. El GESTOR solo puede ver y operar sobre las sucursales y salones que tiene asociados.
+- **Gestor en sucursal**: cada sucursal tiene un gestor responsable. Los salones heredan el gestor de su sucursal.
 
 ## Estado del desarrollo
 
 - [x] Fase 0 — Setup del monorepo
 - [x] Fase 1 — Autenticación y seguridad JWT
-- [ ] Fase 2 — CRUD de Sucursales y Salones
+- [x] Fase 2 — CRUD de Sucursales y Salones
 - [ ] Fase 3 — Reservas (núcleo de negocio)
 - [ ] Fase 4 — Microservicio de Notificaciones
 - [ ] Fase 5 — Indicadores y métricas
