@@ -1,0 +1,998 @@
+{
+  "info": {
+    "_postman_id": "68f1c28f-ee3c-4384-9716-b7f89b1f7dec",
+    "name": "Nelumbo Reservas",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "_exporter_id": "27672536",
+    "_collection_link": "https://go.postman.co/collection/27672536-68f1c28f-ee3c-4384-9716-b7f89b1f7dec?source=collection_link"
+  },
+  "item": [
+    {
+      "name": "1. Auth",
+      "item": [
+        {
+          "name": "Login (Admin)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "if (pm.response.code === 200) {\r",
+                  "    pm.environment.set(\"tokenAdmin\", pm.response.json().token);\r",
+                  "    pm.environment.set(\"tokenActual\", pm.response.json().token);\r",
+                  "}"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n  \"email\": \"admin@mail.com\",\r\n  \"password\": \"admin\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/auth/login",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "auth",
+                "login"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Login (Gestor)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "if (pm.response.code === 200) {\r",
+                  "    pm.environment.set(\"tokenGestor\", pm.response.json().token);\r",
+                  "    pm.environment.set(\"tokenActual\", pm.response.json().token);\r",
+                  "}"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n  \"email\": \"gestor1@mail.com\",\r\n  \"password\": \"gestor123\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/auth/login",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "auth",
+                "login"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Register (Para el Admin)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "if (pm.response.code === 201) {\r",
+                  "    pm.environment.set(\"gestor1Id\", pm.response.json().id);\r",
+                  "}"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{tokenAdmin}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n  \"email\": \"gestor1@mail.com\",\r\n  \"password\": \"gestor123\",\r\n  \"nombre\": \"Maria Gestora\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/auth/register",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "auth",
+                "register"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Logout",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{tokenAdmin}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/auth/logout",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "auth",
+                "logout"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "2. Sucursales",
+      "item": [
+        {
+          "name": "Crear Sucursal",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{tokenAdmin}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n  \"nombre\": \"Sucursal Norte\",\r\n  \"ciudad\": \"Bogota\",\r\n  \"direccion\": \"Calle 100 # 15-20\",\r\n  \"gestorId\": 2\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/sucursales",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "sucursales"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Lista de Surcursales (Admin)",
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          },
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{tokenAdmin}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": ""
+            },
+            "url": {
+              "raw": "{{baseUrl}}/sucursales",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "sucursales"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Lista de Sucursales (Gestor)",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{tokenGestor}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/sucursales",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "sucursales"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Detalle Sucursal (Admin)",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{tokenAdmin}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/sucursales/1",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "sucursales",
+                "1"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Detalle Sucursal (Gestor)",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{tokenGestor}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/sucursales/1",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "sucursales",
+                "1"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Actualizar sucursal",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{tokenAdmin}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "PUT",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n  \"nombre\": \"Sucursal Norte Renombrada\",\r\n  \"ciudad\": \"Bogota\",\r\n  \"direccion\": \"Av Suba # 130-50\",\r\n  \"gestorId\": 2\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/sucursales/1",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "sucursales",
+                "1"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Eliminar Sucursal",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{tokenAdmin}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "DELETE",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/sucursales/1",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "sucursales",
+                "1"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "3. Salones",
+      "item": [
+        {
+          "name": "Crear Salon",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{tokenAdmin}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n  \"nombre\": \"Salon Crystal\",\r\n  \"capacidad\": 100,\r\n  \"costoPorHora\": 150000.00,\r\n  \"sucursalId\": 2,\r\n  \"gestorId\": 3\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/salones",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "salones"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Listar Salones (Admin)",
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          },
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{tokenAdmin}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/salones",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "salones"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Listar Salones (Gestor)",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{tokenGestor}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/salones",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "salones"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Detalle Salon (Admin)",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{tokenAdmin}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/salones/1",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "salones",
+                "1"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Detalle Salon (Gestor)",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{tokenGestor}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/salones/2",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "salones",
+                "2"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Actualizar salon",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{tokenAdmin}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "PUT",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n  \"nombre\": \"Salon Crystal Premium\",\r\n  \"capacidad\": 120,\r\n  \"costoPorHora\": 200000.00,\r\n  \"sucursalId\": 2,\r\n  \"gestorId\": 3\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/salones/2",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "salones",
+                "2"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Eliminar Salon",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{tokenAdmin}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/salones/2",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "salones",
+                "2"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "4. Reservas",
+      "item": [
+        {
+          "name": "Registrar Reserva",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{tokenGestor}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n  \"documentoCliente\": \"1051234\",\r\n  \"nombreCliente\": \"Cliente Prueba\",\r\n  \"fechaInicio\": \"2026-06-01T10:00:00\",\r\n  \"fechaFinEstimada\": \"2026-06-01T12:00:00\",\r\n  \"asistentes\": 5,\r\n  \"salonId\": 1\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/reservas",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "reservas"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Registrar Reserva Premium",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{tokenGestor}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n  \"documentoCliente\": \"920202010\",\r\n  \"nombreCliente\": \"Cliente Premium2\",\r\n  \"fechaInicio\": \"2026-07-05T08:00:00\",\r\n  \"fechaFinEstimada\": \"2026-07-05T14:00:00\",\r\n  \"asistentes\": 15,\r\n  \"salonId\": 1\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/reservas",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "reservas"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Listar Activas por Salon",
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          },
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{tokenGestor}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": ""
+            },
+            "url": {
+              "raw": "{{baseUrl}}/reservas/salon/1",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "reservas",
+                "salon",
+                "1"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Buscar por Documento Parcial (Admin)",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{tokenAdmin}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/reservas/buscar?documento=105",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "reservas",
+                "buscar"
+              ],
+              "query": [
+                {
+                  "key": "documento",
+                  "value": "105"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Aprobar Reserva Premium (Admin)",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{tokenAdmin}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/reservas/2/aprobar",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "reservas",
+                "2",
+                "aprobar"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Rechazar Reserva Premium",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{tokenAdmin}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n  \"motivo\": \"El cliente no completó el anticipo\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/reservas/3/rechazar",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "reservas",
+                "3",
+                "rechazar"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Finalizar Reserva (Gestor)",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{tokenGestor}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n  \"documentoCliente\": \"1051234\",\r\n  \"salonId\": 1\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/reservas/finalizar",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "reservas",
+                "finalizar"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "5. Indicadores",
+      "item": []
+    },
+    {
+      "name": "99. Notificaciones",
+      "item": [
+        {
+          "name": "Microservicio - Recibir Notificación (DEV)",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n  \"email\": \"gestor@mail.com\",\r\n  \"documento\": \"1234567\",\r\n  \"mensaje\": \"Tu reserva ha sido aprobada\",\r\n  \"salonNombre\": \"Salón Cristal\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{notifiacionUrl}}/notificaciones",
+              "host": [
+                "{{notifiacionUrl}}"
+              ],
+              "path": [
+                "notificaciones"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Enviar Notificación a Cliente",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{tokenAdmin}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"email\": \"cliente@mail.com\",\r\n    \"documento\": \"1051234\",\r\n    \"mensaje\": \"Recordatorio de tu reserva\",\r\n    \"salonId\": 1\r\n  }",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/notificaciones",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "notificaciones"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    }
+  ],
+  "event": [
+    {
+      "listen": "prerequest",
+      "script": {
+        "type": "text/javascript",
+        "packages": {},
+        "requests": {},
+        "exec": [
+          ""
+        ]
+      }
+    },
+    {
+      "listen": "test",
+      "script": {
+        "type": "text/javascript",
+        "packages": {},
+        "requests": {},
+        "exec": [
+          ""
+        ]
+      }
+    }
+  ],
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": ""
+    },
+    {
+      "key": "token",
+      "value": ""
+    }
+  ]
+}
