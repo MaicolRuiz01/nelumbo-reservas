@@ -1,5 +1,6 @@
 package com.nelumbo.reservas.repository;
 
+import com.nelumbo.reservas.dto.response.TopClienteResponse;
 import com.nelumbo.reservas.entity.Reserva;
 import com.nelumbo.reservas.enums.EstadoReserva;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -59,4 +60,16 @@ public interface ReservaRepository extends JpaRepository<Reserva, Long> {
             @Param("fechaInicio") LocalDateTime fechaInicio,
             @Param("fechaFin") LocalDateTime fechaFin
     );
+
+    @Query("""
+    SELECT new com.nelumbo.reservas.dto.response.TopClienteResponse(
+        r.documentoCliente,
+        r.nombreCliente,
+        COUNT(r)
+    )
+    FROM Reserva r
+    WHERE r.estado = com.nelumbo.reservas.enums.EstadoReserva.ACTIVA
+    GROUP BY r.documentoCliente, r.nombreCliente
+""")
+    List<TopClienteResponse> contarReservasActivasPorClienteGlobal();
 }
