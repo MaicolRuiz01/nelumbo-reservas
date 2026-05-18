@@ -76,7 +76,7 @@
             "header": [],
             "body": {
               "mode": "raw",
-              "raw": "{\r\n  \"email\": \"gestor1@mail.com\",\r\n  \"password\": \"gestor123\"\r\n}",
+              "raw": "{\r\n  \"email\": \"gestor2@mail.com\",\r\n  \"password\": \"gestor123\"\r\n}",
               "options": {
                 "raw": {
                   "language": "json"
@@ -430,7 +430,7 @@
             "header": [],
             "body": {
               "mode": "raw",
-              "raw": "{\r\n  \"nombre\": \"Salon Crystal\",\r\n  \"capacidad\": 100,\r\n  \"costoPorHora\": 150000.00,\r\n  \"sucursalId\": 2,\r\n  \"gestorId\": 3\r\n}",
+              "raw": "{\r\n  \"nombre\": \"Salon Diamante\",\r\n  \"capacidad\": 80,\r\n  \"costoPorHora\": 200000.00,\r\n  \"sucursalId\": 2,\r\n  \"gestorId\": 3\r\n}",
               "options": {
                 "raw": {
                   "language": "json"
@@ -658,7 +658,7 @@
             "header": [],
             "body": {
               "mode": "raw",
-              "raw": "{\r\n  \"documentoCliente\": \"1051234\",\r\n  \"nombreCliente\": \"Cliente Prueba\",\r\n  \"fechaInicio\": \"2026-06-01T10:00:00\",\r\n  \"fechaFinEstimada\": \"2026-06-01T12:00:00\",\r\n  \"asistentes\": 5,\r\n  \"salonId\": 1\r\n}",
+              "raw": "{\r\n  \"documentoCliente\": \"1051234\",\r\n  \"nombreCliente\": \"Cliente Prueba\",\r\n  \"fechaInicio\": \"2026-08-01T10:00:00\",\r\n  \"fechaFinEstimada\": \"2026-08-01T12:00:00\",\r\n  \"asistentes\": 15,\r\n  \"salonId\": 1\r\n}",
               "options": {
                 "raw": {
                   "language": "json"
@@ -694,7 +694,7 @@
             "header": [],
             "body": {
               "mode": "raw",
-              "raw": "{\r\n  \"documentoCliente\": \"920202010\",\r\n  \"nombreCliente\": \"Cliente Premium2\",\r\n  \"fechaInicio\": \"2026-07-05T08:00:00\",\r\n  \"fechaFinEstimada\": \"2026-07-05T14:00:00\",\r\n  \"asistentes\": 15,\r\n  \"salonId\": 1\r\n}",
+              "raw": "{\r\n  \"documentoCliente\": \"9202020103\",\r\n  \"nombreCliente\": \"Cliente Premium3\",\r\n  \"fechaInicio\": \"2026-07-05T08:00:00\",\r\n  \"fechaFinEstimada\": \"2026-07-05T14:00:00\",\r\n  \"asistentes\": 15,\r\n  \"salonId\": 1\r\n}",
               "options": {
                 "raw": {
                   "language": "json"
@@ -799,13 +799,13 @@
             "method": "POST",
             "header": [],
             "url": {
-              "raw": "{{baseUrl}}/reservas/2/aprobar",
+              "raw": "{{baseUrl}}/reservas/6/aprobar",
               "host": [
                 "{{baseUrl}}"
               ],
               "path": [
                 "reservas",
-                "2",
+                "6",
                 "aprobar"
               ]
             }
@@ -891,7 +891,154 @@
     },
     {
       "name": "5. Indicadores",
-      "item": []
+      "item": [
+        {
+          "name": "Top Clientes",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{tokenAdmin}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/indicadores/top-clientes",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "indicadores",
+                "top-clientes"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Top Clientes Salon",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{tokenActual}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/indicadores/top-clientes/salon/1",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "indicadores",
+                "top-clientes",
+                "salon",
+                "1"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Clientes por primera vez",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{tokenActual}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/indicadores/clientes-primera-vez/salon/1",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "indicadores",
+                "clientes-primera-vez",
+                "salon",
+                "1"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Ganancias",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{tokenActual}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/indicadores/ganancias/salon/1",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "indicadores",
+                "ganancias",
+                "salon",
+                "1"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Top Sucursales",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{tokenActual}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/indicadores/top-sucursales",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "indicadores",
+                "top-sucursales"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
     },
     {
       "name": "99. Notificaciones",

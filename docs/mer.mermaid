@@ -1,0 +1,65 @@
+erDiagram
+    USUARIO ||--o{ SUCURSAL : "es gestor de"
+    USUARIO ||--o{ SALON : "es gestor de"
+    USUARIO ||--o{ RESERVA : "registra"
+    USUARIO ||--o{ RESERVA_HISTORICA : "registro"
+
+    SUCURSAL ||--o{ SALON : "contiene"
+
+    SALON ||--o{ RESERVA : "tiene"
+    SALON ||--o{ RESERVA_HISTORICA : "tuvo"
+
+    USUARIO {
+        bigint id PK
+        varchar(150) email UK "unique, not null"
+        varchar(255) password "BCrypt hash, not null"
+        varchar(150) nombre "not null"
+        varchar(20) rol "ADMIN | GESTOR"
+        boolean activo "default true"
+        timestamp fecha_creacion "default now()"
+    }
+
+    SUCURSAL {
+        bigint id PK
+        varchar(100) nombre "not null"
+        varchar(100) ciudad "not null"
+        varchar(255) direccion "not null"
+        bigint gestor_id FK "FK -> usuarios"
+    }
+
+    SALON {
+        bigint id PK
+        varchar(100) nombre "not null"
+        integer capacidad "CHECK > 0"
+        numeric costo_por_hora "CHECK > 0"
+        bigint sucursal_id FK "FK -> sucursales"
+        bigint gestor_id FK "FK -> usuarios"
+    }
+
+    RESERVA {
+        bigint id PK
+        varchar(12) documento_cliente "6-12 digitos"
+        varchar(150) nombre_cliente "not null"
+        timestamp fecha_inicio "not null"
+        timestamp fecha_fin_estimada "fin > inicio"
+        timestamp fecha_creacion "not null"
+        integer asistentes "CHECK > 0"
+        varchar(30) estado "ACTIVA | PENDIENTE_APROBACION | RECHAZADA | EXPIRADA"
+        varchar(500) motivo_rechazo "nullable"
+        bigint salon_id FK "FK -> salones"
+        bigint gestor_id FK "FK -> usuarios"
+    }
+
+    RESERVA_HISTORICA {
+        bigint id PK
+        varchar(12) documento_cliente "6-12 digitos"
+        varchar(150) nombre_cliente "not null"
+        timestamp fecha_inicio "not null"
+        timestamp fecha_fin_estimada "not null"
+        timestamp fecha_creacion "not null"
+        timestamp fecha_finalizacion_real "not null"
+        integer asistentes "CHECK > 0"
+        numeric total_cobrado "CHECK >= 0"
+        bigint salon_id FK "FK -> salones"
+        bigint gestor_id FK "FK -> usuarios"
+    }

@@ -46,21 +46,7 @@ import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-/**
- * Tests unitarios del ReservaService.
- *
- * Estrategia: mockeamos TODOS los colaboradores (repos + mapper) con Mockito y
- * verificamos que el service:
- *   1) llame a los repos con los parametros correctos,
- *   2) construya la entidad Reserva con los datos correctos,
- *   3) lance las excepciones esperadas en los casos de error,
- *   4) calcule los valores derivados (estado premium, costo redondeado) bien.
- *
- * Estructura de cada test: AAA (Arrange / Act / Assert).
- *   - Arrange: preparamos los mocks y los datos de entrada.
- *   - Act:     llamamos al metodo bajo prueba.
- *   - Assert:  verificamos resultado y/o interacciones con los mocks.
- */
+
 @ExtendWith(MockitoExtension.class)
 class ReservaServiceTest {
 
@@ -72,6 +58,11 @@ class ReservaServiceTest {
     @Mock private SalonRepository salonRepository;
     @Mock private UsuarioRepository usuarioRepository;
     @Mock private ReservaMapper reservaMapper;
+    // Cableado en Fase 4: aprobar() dispara una notificación al gestor.
+    // Sin este mock, @InjectMocks deja notificacionService=null y la rama
+    // de aprobar() pega NPE. Lo mockeamos vacío porque para esta clase
+    // de tests solo nos importa la transición de estado, no el side-effect.
+    @Mock private NotificacionService notificacionService;
 
     // ============================================================
     // Sistema bajo prueba (SUT) — con los mocks inyectados

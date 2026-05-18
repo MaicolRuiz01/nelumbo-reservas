@@ -1,5 +1,8 @@
 services:
 
+  # ----------------------------------------------------------------
+  # PostgreSQL 16 - Base de datos principal
+  # ----------------------------------------------------------------
   postgres:
     image: postgres:16-alpine
     container_name: nelumbo-postgres
@@ -20,8 +23,46 @@ services:
     networks:
       - nelumbo-net
 
-  # api-reservas y api-notificaciones se agregaran aqui
-  # cuando dockericemos los servicios en la Fase 6.
+  # ----------------------------------------------------------------
+  # Microservicio de notificaciones (simulado)
+  # ----------------------------------------------------------------
+  microservicio-notificaciones:
+    build:
+      context: ./microservicio-notificaciones
+      dockerfile: Dockerfile
+    image: nelumbo/microservicio-notificaciones:latest
+    container_name: nelumbo-microservicio-notificaciones
+    restart: unless-stopped
+    ports:
+      - "8081:8081"
+    networks:
+      - nelumbo-net
+
+  # ----------------------------------------------------------------
+  # API principal de reservas
+  # ----------------------------------------------------------------
+  api-reservas:
+    build:
+      context: ./api-reservas
+      dockerfile: Dockerfile
+    image: nelumbo/api-reservas:latest
+    container_name: nelumbo-api-reservas
+    restart: unless-stopped
+    depends_on:
+      postgres:
+        condition: service_healthy
+      microservicio-notificaciones:
+        condition: service_started
+    environment:
+      SPRING_PROFILES_ACTIVE: docker
+      DB_USER: ${DB_USER:-postgres}
+      DB_PASSWORD: ${DB_PASSWORD:-postgres}
+      JWT_SECRET: ${JWT_SECRET:-Y2FtYmlhci1lc3RhLWNsYXZlLWVuLXByb2R1Y2Npb24tcG9yLXVuYS1tdXktc2VndXJh}
+      NOTIFICACIONES_URL: http://microservicio-notificaciones:8081
+    ports:
+      - "8080:8080"
+    networks:
+      - nelumbo-net
 
 volumes:
   postgres_data:
