@@ -144,5 +144,5 @@ Authorization: Bearer <token>
 - [x] Fase 2 — CRUD de Sucursales y Salones
 - [x] Fase 3 — Reservas (núcleo de negocio)
 - [x] Fase 4 — Microservicio de Notificaciones
-- [ ] Fase 5 — Indicadores y métricas
+- [x] Fase 5 — Indicadores y métricas
 - [ ] Fase 6 — Calidad y entrega final

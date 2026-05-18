@@ -72,4 +72,33 @@ public interface ReservaRepository extends JpaRepository<Reserva, Long> {
     GROUP BY r.documentoCliente, r.nombreCliente
 """)
     List<TopClienteResponse> contarReservasActivasPorClienteGlobal();
+
+    @Query("""
+    SELECT new com.nelumbo.reservas.dto.response.TopClienteResponse(
+        r.documentoCliente,
+        r.nombreCliente,
+        COUNT(r)
+    )
+    FROM Reserva r
+    WHERE r.estado = com.nelumbo.reservas.enums.EstadoReserva.ACTIVA
+      AND r.salon.id = :salonId
+    GROUP BY r.documentoCliente, r.nombreCliente
+""")
+    List<TopClienteResponse> contarReservasActivasPorClienteEnSalon(Long salonId);
+
+    @Query("""
+    SELECT r
+    FROM Reserva r
+    WHERE r.salon.id = :salonId
+      AND r.estado = com.nelumbo.reservas.enums.EstadoReserva.ACTIVA
+      AND NOT EXISTS (
+            SELECT h.id
+            FROM ReservaHistorica h
+            WHERE h.salon.id = :salonId
+              AND h.documentoCliente = r.documentoCliente
+      )
+""")
+    List<Reserva> buscarReservasActivasPrimeraVez(Long salonId);
+
+
 }
