@@ -51,10 +51,8 @@ public class ReservaService {
     private final SalonRepository salonRepository;
     private final UsuarioRepository usuarioRepository;
     private final ReservaMapper reservaMapper;
+    private final NotificacionService notificacionService;
 
-    // ============================================================
-    // Registrar reserva (endpoint 4.3 del PDF)
-    // ============================================================
     @Transactional
     public CrearReservaResponse registrar(ReservaRequest request, String email, boolean esAdmin) {
 
@@ -88,8 +86,6 @@ public class ReservaService {
         reserva.setFechaCreacion(LocalDateTime.now());
         reserva.setAsistentes(request.asistentes());
         reserva.setSalon(salon);
-        // El gestor responsable de la reserva es el dueño del salón
-        // (es a él a quien se notifica si la reserva premium se aprueba)
         reserva.setGestor(salon.getGestor());
 
         if (costoEstimado.compareTo(MONTO_PREMIUM) > 0) {
@@ -103,9 +99,6 @@ public class ReservaService {
         return new CrearReservaResponse(guardada.getId());
     }
 
-    // ============================================================
-    // Finalizar reserva (endpoint 4.4 del PDF)
-    // ============================================================
     @Transactional
     public FinalizarReservaResponse finalizar(FinalizarReservaRequest request, String email, boolean esAdmin) {
 
@@ -151,9 +144,6 @@ public class ReservaService {
         return new FinalizarReservaResponse("Reserva finalizada", totalCobrado);
     }
 
-    // ============================================================
-    // Listar reservas ACTIVAS por salón (endpoint 4.5 del PDF)
-    // ============================================================
     @Transactional(readOnly = true)
     public List<ReservaResponse> listarActivasPorSalon(Long salonId, String email, boolean esAdmin) {
 
@@ -170,9 +160,7 @@ public class ReservaService {
                 .toList();
     }
 
-    // ============================================================
-    // Buscar reservas ACTIVAS por documento parcial (endpoint 4.6 del PDF)
-    // ============================================================
+
     @Transactional(readOnly = true)
     public List<ReservaResponse> buscarPorDocumentoParcial(String documento, String email, boolean esAdmin) {
 
@@ -190,9 +178,7 @@ public class ReservaService {
                 .toList();
     }
 
-    // ============================================================
-    // Aprobar reserva premium (sección 7 del PDF — solo ADMIN)
-    // ============================================================
+
     @Transactional
     public ReservaResponse aprobar(Long reservaId) {
 
@@ -204,16 +190,15 @@ public class ReservaService {
 
         reserva.setEstado(EstadoReserva.ACTIVA);
 
-        // TODO Fase 5: notificar al gestor responsable vía microservicio.
-        log.info("Reserva id={} aprobada por ADMIN. Pendiente notificar al gestor {}.",
+        log.info("Reserva id={} APROBADA por ADMIN. Gestor responsable: {}",
                 reserva.getId(), reserva.getGestor().getEmail());
+
+        notificacionService.notificarAprobacionAlGestor(reserva);
 
         return reservaMapper.toResponse(reserva);
     }
 
-    // ============================================================
-    // Rechazar reserva premium (sección 7 del PDF — solo ADMIN)
-    // ============================================================
+
     @Transactional
     public ReservaResponse rechazar(Long reservaId, RechazarReservaRequest request) {
 
@@ -231,9 +216,7 @@ public class ReservaService {
         return reservaMapper.toResponse(reserva);
     }
 
-    // ============================================================
-    // Helpers privados
-    // ============================================================
+
 
     private void validarFechas(ReservaRequest request) {
         if (!request.fechaFinEstimada().isAfter(request.fechaInicio())) {
@@ -285,11 +268,6 @@ public class ReservaService {
                 .orElseThrow(() -> new UsernameNotFoundException("Usuario no encontrado: " + email));
     }
 
-    /**
-     * Calcula el costo total redondeando las horas HACIA ARRIBA.
-     * Regla del PDF (sección 8): cualquier fracción menor a una hora se cobra como una hora completa.
-     * Ej: 1h 30min = 2h, 0h 45min = 1h, 2h exactas = 2h.
-     */
     private BigDecimal calcularCosto(BigDecimal costoPorHora,
                                      LocalDateTime fechaInicio,
                                      LocalDateTime fechaFin) {

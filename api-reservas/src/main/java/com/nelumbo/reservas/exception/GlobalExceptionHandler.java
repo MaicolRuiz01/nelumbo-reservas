@@ -239,6 +239,26 @@ public class GlobalExceptionHandler {
                 .body(ErrorResponse.simple(mensaje, 400, request.getRequestURI()));
     }
 
+    @ExceptionHandler(NotificacionMicroservicioException.class)
+    public ResponseEntity<ErrorResponse> handleNotificacionMicroservicio(
+            NotificacionMicroservicioException ex, HttpServletRequest request) {
+        log.error("Fallo en microservicio de notificaciones: {}", ex.getMessage());
+
+        return ResponseEntity.status(HttpStatus.BAD_GATEWAY)
+                .body(ErrorResponse.simple(
+                        ex.getMessage(),
+                        HttpStatus.BAD_GATEWAY.value(), // Esto pasará el código 502
+                        request.getRequestURI()
+                ));
+    }
+    @ExceptionHandler(NotificacionReservaActivaInexistenteException.class)
+    public ResponseEntity<ErrorResponse> handleNotificacionReservaInexistente(
+            NotificacionReservaActivaInexistenteException ex, HttpServletRequest request) {
+        log.warn("Notificación sin reserva activa: {}", ex.getMessage());
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                .body(ErrorResponse.simple(ex.getMessage(), 400, request.getRequestURI()));
+    }
+
     private String formatearError(FieldError fieldError) {
         return fieldError.getField() + ": " + fieldError.getDefaultMessage();
     }
